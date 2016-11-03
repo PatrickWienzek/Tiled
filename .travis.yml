@@ -24,19 +24,19 @@ matrix:
   include:
     - os: linux
       compiler: gcc
+      env:
+        - TILED_LINUX_ARCHIVE=true
       before_install:
         - sudo add-apt-repository --yes ppa:beineri/opt-qt562-trusty
         - sudo apt-get update -qq
-        - sudo apt-get -y install qt56base qt56tools binutils zlib1g-dev libqt5opengl5-dev
+        - sudo apt-get -y install qt56base qt56svg qt56tools qt56qbs binutils zlib1g-dev libqt5opengl5-dev
         - source /opt/*/bin/qt*-env.sh
+        - qbs setup-toolchains --detect
+        - qbs setup-qt `which qmake` qt
+        - qbs config profiles.qt.baseProfile cpp
+        - qbs config defaultProfile qt
       script:
-        - mkdir Tiled ; cd Tiled/
-        - qmake ../tiled.pro
-        - make
-        - rm -rf src/
-        - mv bin/* . && rm -r bin/ # Workaround for https://github.com/probonopd/linuxdeployqt/issues/14
-        - cd ../
-        - cp LICENSE* COPYING *md Tiled/
+        - qbs install --all-products --install-root Tiled release
         - cp ./tiled.desktop Tiled/
         - cp ./src/tiled/images/32x32/tiled.png Tiled/
         - wget -c "https://transfer.sh/ihv7a/linuxdeployqt-42fc34c-x86-64.appimage"
@@ -80,3 +80,5 @@ matrix:
 
 before_script:
   - qmake -version
+  - [ "$TRAVIS_TAG" ] && export TILED_RELEASE=true
+  - [ "$TRAVIS_BRANCH" == "snapshot" ] && export TILED_SNAPSHOT=true
