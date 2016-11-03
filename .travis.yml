@@ -80,5 +80,5 @@ matrix:
 
 before_script:
   - qmake -version
-  - [ "$TRAVIS_TAG" ] && export TILED_RELEASE=true
-  - [ "$TRAVIS_BRANCH" == "snapshot" ] && export TILED_SNAPSHOT=true
+  - if [[ "$TRAVIS_TAG" ]]; then export TILED_RELEASE=true ; fi
+  - if [[ "$TRAVIS_BRANCH" == "snapshot" ]]; then export TILED_SNAPSHOT=true ; fi
