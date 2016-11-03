@@ -33,7 +33,7 @@ matrix:
         - source /opt/*/bin/qt*-env.sh
         - qbs setup-toolchains --detect
         - qbs setup-qt `which qmake` qt
-        - qbs config profiles.qt.baseProfile cpp
+        - qbs config profiles.qt.baseProfile gcc
         - qbs config defaultProfile qt
       script:
         - qbs install --all-products --install-root Tiled release
